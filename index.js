@@ -43,10 +43,13 @@ class App extends Component {
   }
 }
 
-class ErrorBoundary extends React.Component {
+class FallbackWrapper extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+
+    this.state = {
+      hasError: false
+    }
   }
 
   static getDerivedStateFromError(error) {
@@ -58,38 +61,25 @@ class ErrorBoundary extends React.Component {
   }
 
   render() {
-    console.log(this.state);
-
     if (this.state.hasError) {
-      return <h1>Что-то пошло не так.</h1>;
+      return <h1>{this.props.errorMessage}</h1>;
     }
 
-    return this.props.children; 
+    return this.props.children;
   }
 }
 
-class FallbackWrapper extends React.Component {
-  constructor(props) {
-    super(props);
+// 1. Напишите компонент c input'ом и кнопкой. 
+// Компонент по нажатию на кнопку отправляет запрос на урл, 
+// который ввел пользователь в input. Если сервер по этому url'у отдает json, 
+// отданные данные должны вывестись под input'ом. 
+// Если случается ошибка (нет сети, не json, под input'ом показывается сообщение об ошибке).
+// render(<App />, document.getElementById('root'));
 
-    this.state = {
-      errorMessage: this.props.errorMessage 
-    }
-  }
-
-  componentDidCatch(e) {
-    console.log(e);
-  }
-
-  render() {
-    return (this.props.children);
-  }
-}
-
+// 2. Напишите компонент <FallbackWrapper />, который показывает своих детей. 
+// Если в отдном из дочерних компонентов случается ошибка, вместо него показывается разметка, переданная в свойстве errorMessage.
 render(
-  <ErrorBoundary>
-    <FallbackWrapper errorMessage="Unexpected error">
-      <h1>Some header</h1>
-    </FallbackWrapper>
-  </ErrorBoundary>, document.getElementById('root')
+  <FallbackWrapper errorMessage="Unexpected error">
+    <h1>Some header</h1>
+  </FallbackWrapper>, document.getElementById('root')
 );
